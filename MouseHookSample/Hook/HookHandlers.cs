@@ -18,7 +18,9 @@ namespace MouseHookSample
                 if (iKeypress == 1)
                 {
                     //Perform the action, in this case, display a messagebox.
-                    ExecuteAction();
+                    //always call the action on a new thread so it does not block the hook. 
+                    //A messagebox will block so it must be displayed from a different thread
+                    new Thread(() => { ExecuteAction(); }).Start();
 
                     //Setting this variable to true tells the hook not to pass this mouse input to the next hook.
                     mouseEventExtArgs.Handled = true;
@@ -37,9 +39,7 @@ namespace MouseHookSample
 
         private static void ExecuteAction()
         {
-            //always call the action on a new thread so it does not block the hook. 
-            //A messagebox will block so it must be displayed from a different thread
-            new Thread(() => { MouseInputAction.DisplayMessage("You right-clicked the mouse"); }).Start();
+            MouseInputAction.DisplayMessage("You right-clicked the mouse");
         }
 
 
